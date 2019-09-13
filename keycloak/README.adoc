@@ -1,0 +1,10 @@
+To run the sample, ensure you have https://docs.docker.com/install/[docker installed].
+If you are using Ubuntu, you can use `./ubuntu-install-docker.sh`.
+
+Once docker is installed, you can run `./keycloak.sh` which will start keycloak container and make keycloak available on port `9999`.
+
+Next start up `flight-tracker` application and then access http://localhost:8080/login.html
+
+You can login with the username `user` and the password `password`.
+
+The sample will then alert the access token.
