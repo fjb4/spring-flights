@@ -5,7 +5,7 @@ const zoomLevel = 10;
 
 
 window.onload = function init() {
-    var map = new RadarMap(startCoordinates, zoomLevel);
+    let map = new RadarMap(startCoordinates, zoomLevel);
 };
 
 
