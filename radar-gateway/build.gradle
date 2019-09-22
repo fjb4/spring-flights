@@ -1,8 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.0.M6'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
 	id 'java'
 }
+
+apply plugin: 'io.spring.dependency-management'
 
 group = 'io.spring.sample'
 version = '0.0.1-SNAPSHOT'
@@ -23,10 +24,6 @@ repositories {
 	maven { url 'https://oss.jfrog.org/artifactory/libs-snapshot' }
 }
 
-ext {
-	set('springCloudVersion', "Hoxton.BUILD-SNAPSHOT")
-}
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.cloud:spring-cloud-gateway-rsocket-broker'
@@ -34,6 +31,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('io.projectreactor:reactor-test')
+}
+
+ext {
+	set('springCloudVersion', "Hoxton.BUILD-SNAPSHOT")
 }
 
 dependencyManagement {
