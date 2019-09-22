@@ -1,0 +1,18 @@
+spring:
+  rsocket:
+    server:
+      port: 7002 # default is 7002
+  cloud:
+    gateway:
+      rsocket:
+        enabled: true # default is true
+        id: gateway # default is gateway
+        route-id: 1
+        service-name: gateway # default is gateway
+        micrometer-tags:
+          - component # default is component
+          - gateway # default is gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway.rsocket: DEBUG
