@@ -113,3 +113,38 @@ cf push --vars-file manifest-vars.yml
 ```
 
 The tracker application is available at `http://flight-tracker.<YOUR-DOMAIN>/index.html`
+
+### Run locally using Spring Cloud Gateway RSocket
+
+First, run the gateway application:
+```
+$ ./gradlew :radar-gateway:build
+$ java -jar radar-gateway/build/libs/radar-gateway-0.0.1-SNAPSHOT.jar
+```
+
+Then, run three instances of the collector application using different profiles: 
+- To control which subset of [airports](radar-collector/src/main/resources/airports.json) each instance loads, we use profiles `civilian`, `military1`, and `military2`.
+- To configure the connection of the collector application to the gateway application, we add the `gateway` profile.
+This enables the collector to create a connection with the gateway, rather than waiting for flight-tracker to create direct connections to collector on a given port.
+
+You can review the corresponding properties files in the radar-collector application for the profile-based configuration.
+```
+$ # Build radar-collector
+$ ./gradlew :radar-collector:build
+
+$ # In one terminal run:
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=civilian,gateway
+
+$ # In a second terminal run:
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1,gateway
+
+$ # In a third terminal run:
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1,gateway
+```
+
+TO-DO:
+- Disable TCP listening port when collector is in gateway client mode
+- Disable gateway client auto-configuration when collector is not in gateway client mode
+- Update request code in collector to include the necessary metadata for gateway
+- Update flight-tracker to be a client to gateway
+- Deploy with gateway to Cloud Foundry
