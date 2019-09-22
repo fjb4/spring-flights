@@ -14,4 +14,4 @@ pluginManagement {
 	}
 }
 rootProject.name = 'spring-flights'
-include 'radar-collector', 'flight-client', 'flight-tracker'
+include 'radar-collector', 'flight-client', 'flight-tracker', 'radar-gateway'
