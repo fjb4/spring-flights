@@ -7,6 +7,12 @@ This application is made of 3 modules:
 * `radar-collector`, an app that provides information about radars and the aircraft signals they collect.
 * `flight-tracker` and `flight-client`, an app that displays an interactive map with radars and aircrafts.
 
+## SECTION 1 - No Gateway
+To run without Gateway:
+```
+git checkout 70a8240
+```
+
 ### Running the applications
 
 First, run the collector application:
@@ -114,7 +120,17 @@ cf push --vars-file manifest-vars.yml
 
 The tracker application is available at `http://flight-tracker.<YOUR-DOMAIN>/index.html`
 
+## SECTION 2 - With Gateway
+To run with Gateway:
+```
+git checkout master
+```
+
 ### Run locally using Spring Cloud Gateway RSocket
+
+In this mode, radar-collector and flight-tracker both behave as clients of the gateway application, meaning that they initiate a connection with the gateway when they start up. 
+Flight-tracker does not create a connection directly with radar-collector. In fact, radar-collector does not even need to listen on any port.
+The gateway will broker the communication betwen flight-tracker and radar-collector.
 
 First, run the gateway application:
 ```
@@ -122,29 +138,26 @@ $ ./gradlew :radar-gateway:build
 $ java -jar radar-gateway/build/libs/radar-gateway-0.0.1-SNAPSHOT.jar
 ```
 
-Then, run three instances of the collector application using different profiles: 
-- To control which subset of [airports](radar-collector/src/main/resources/airports.json) each instance loads, we use profiles `civilian`, `military1`, and `military2`.
-- To configure the connection of the collector application to the gateway application, we add the `gateway` profile.
-This enables the collector to create a connection with the gateway, rather than waiting for flight-tracker to create direct connections to collector on a given port.
-
-You can review the corresponding properties files in the radar-collector application for the profile-based configuration.
+Then, run three instances of the radar-collector application using a different profile for each.
+The profiles determine which subset of [airports](radar-collector/src/main/resources/airports.json) each instance loads.
+They also set a tag that gateway can use to route requests to the appropriate instance.
 ```
 $ # Build radar-collector
 $ ./gradlew :radar-collector:build
 
 $ # In one terminal run:
-$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=civilian,gateway
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=civilian
 
 $ # In a second terminal run:
-$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1,gateway
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1
 
 $ # In a third terminal run:
-$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1,gateway
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military2
 ```
 
+Flight-tracker requests are enhanced with additional metadata that instructs the gateway on the instance of collector to which to route the message.
+
 TO-DO:
-- Disable TCP listening port when collector is in gateway client mode
-- Disable gateway client auto-configuration when collector is not in gateway client mode
-- Update request code in collector to include the necessary metadata for gateway
+- Find a way to set up controller to function as a server or client based solely on configuration
 - Update flight-tracker to be a client to gateway
 - Deploy with gateway to Cloud Foundry
