@@ -138,7 +138,7 @@ $ ./gradlew :radar-gateway:build
 $ java -jar radar-gateway/build/libs/radar-gateway-0.0.1-SNAPSHOT.jar
 ```
 
-Then, run three instances of the radar-collector application using a different profile for each.
+Then, run two instances of the radar-collector application using a different profile for each.
 The profiles determine which subset of [airports](radar-collector/src/main/resources/airports.json) each instance loads.
 They also set a tag that gateway can use to route requests to the appropriate instance.
 ```
@@ -149,15 +149,18 @@ $ # In one terminal run:
 $ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=civilian
 
 $ # In a second terminal run:
-$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military1
-
-$ # In a third terminal run:
-$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military2
+$ java -jar radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar --spring.profiles.active=military
 ```
 
 Flight-tracker requests are enhanced with additional metadata that instructs the gateway on the instance of collector to which to route the message.
+Run the tracker web application:
+```
+$ ./gradlew :flight-tracker:build
+$ java -jar flight-tracker/build/libs/flight-tracker-0.0.1-SNAPSHOT.jar
+```
+
 
 TO-DO:
 - Find a way to set up controller to function as a server or client based solely on configuration
-- Update flight-tracker to be a client to gateway
+- Make sure tracker as gateway client works
 - Deploy with gateway to Cloud Foundry
