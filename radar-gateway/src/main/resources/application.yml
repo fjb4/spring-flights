@@ -1,7 +1,7 @@
 spring:
   rsocket:
     server:
-      port: 7002 # default is 7002
+      port: ${rsocket.server.port:7002} # default is 7002
   cloud:
     gateway:
       rsocket:

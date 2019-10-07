@@ -1,13 +1,29 @@
 ---
 applications:
-  - name: radar-collector
+  - name: radar-gateway
     routes:
       - route: ((cf.route.tcp.domain)):((cf.route.tcp.port))
+    path: radar-gateway/build/libs/radar-gateway-0.0.1-SNAPSHOT.jar
+    env:
+      RSOCKET_SERVER_PORT: 8080
+  - name: radar-collector-civilian
+    no-route: true
     path: radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar
+    env:
+      GATEWAY_BROKER_HOST: ((cf.route.tcp.domain))
+      GATEWAY_BROKER_PORT: ((cf.route.tcp.port))
+      SPRING_PROFILES_ACTIVE: civilian
+  - name: radar-collector-military
+    no-route: true
+    path: radar-collector/build/libs/radar-collector-0.0.1-SNAPSHOT.jar
+    env:
+      GATEWAY_BROKER_HOST: ((cf.route.tcp.domain))
+      GATEWAY_BROKER_PORT: ((cf.route.tcp.port))
+      SPRING_PROFILES_ACTIVE: military
   - name: flight-tracker
     routes:
       - route: flight-tracker.((cf.route.http.domain))
     path: flight-tracker/build/libs/flight-tracker-0.0.1-SNAPSHOT.jar
     env:
-      RADAR-SERVICE_HOST: ((cf.route.tcp.domain))
-      RADAR-SERVICE_PORT: ((cf.route.tcp.port))
+      GATEWAY_BROKER_HOST: ((cf.route.tcp.domain))
+      GATEWAY_BROKER_PORT: ((cf.route.tcp.port))
