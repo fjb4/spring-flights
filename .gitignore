@@ -1,6 +1,8 @@
 flight-client/src/config.js
 
 .gradle
+bin/
+target/
 /build/
 !gradle/wrapper/gradle-wrapper.jar
 
